@@ -1,10 +1,14 @@
-def get_mask_card_number(card_number: str) -> str:
-    if len(card_number) != 16:
-        raise ValueError("Неверный формат номера карты")
-    return f"**** **** **** {card_number[-4:]}"
+def mask_account_card(info):
+    card_types = ["Visa", "Maestro", "MasterCard"]
+    # Проверяем тип карты или счета
+    for card_type in card_types:
+        if info.startswith(card_type):
+            num = info.split()[-1]  # получаем номер карты
+            return f"{' '.join(info.split()[:-1])} {num[:4]} {num[4:6]}** **** {num[-4:]}"
 
+    # Если это счет
+    if info.startswith("Счет"):
+        num = info.split()[-1]
+        return f"Счет **{num[-4:]}"
 
-def get_mask_account(account_number: str) -> str:
-    if len(account_number) != 20:
-        raise ValueError("Неверный формат номера счета")
-    return f"{account_number[:5]}**** **** **** ****"
+    return "Неизвестный тип информации"
